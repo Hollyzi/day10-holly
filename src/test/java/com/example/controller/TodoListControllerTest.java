@@ -30,6 +30,7 @@ class TodoListControllerTest {
     @Autowired
     private JacksonTester<List<TodoItem>> todoItemJacksonTester;
     private TodoItem todoItem;
+    private TodoItem testdata2;
 
     @BeforeEach
     void setup(){
@@ -38,6 +39,8 @@ class TodoListControllerTest {
 
         todoItem=new TodoItem("testMock",false);
         todoListRepository.save(todoItem);
+        testdata2= new TodoItem("testdata2", false);
+        todoListRepository.save(testdata2);
     }
 
     @Test
@@ -54,6 +57,18 @@ class TodoListControllerTest {
         assertThat(fetchedTodoItems)
                 .usingRecursiveFieldByFieldElementComparator()
                 .isEqualTo(givenTodos);
+    }
+
+    @Test
+    void should_return_no_content_when_call_delete() throws Exception {
+        //Given
+        var toDeleteTodoId=testdata2.getId();
+
+        //When
+        final MvcResult result= client.perform(MockMvcRequestBuilders.delete("/todos/2")).andReturn();
+        //Then
+        assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(todoListRepository.findAll()).hasSize(1);
 
     }
 
