@@ -35,4 +35,8 @@ public class TodoListService {
     public void delete(Integer id) {
         todoListRepository.deleteById(id);
     }
+
+    public TodoItem findOne(Integer id) {
+        return todoListRepository.findById(id).orElse(null);
+    }
 }
