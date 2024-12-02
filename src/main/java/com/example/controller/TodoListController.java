@@ -24,7 +24,7 @@ public class TodoListController {
     }
 
     @GetMapping("/{id}")
-    public TodoItem getTodoItemById(@PathVariable Integer id){
+    public TodoItem getTodoItemById(@PathVariable Integer id) {
         return todoListService.findOne(id);
     }
 
@@ -35,13 +35,13 @@ public class TodoListController {
     }
 
     @PutMapping("/{id}")
-    public TodoItem updateTodoItem(@PathVariable Integer id,@RequestBody TodoItem todoItem){
-        return todoListService.update(id,todoItem);
+    public TodoItem updateTodoItem(@PathVariable Integer id, @RequestBody TodoItem todoItem) {
+        return todoListService.update(id, todoItem);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteTodoItem(@PathVariable Integer id){
+    public void deleteTodoItem(@PathVariable Integer id) {
         todoListService.delete(id);
     }
 }

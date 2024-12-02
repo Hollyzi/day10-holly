@@ -59,9 +59,7 @@ class TodoListControllerTest {
         assertThat(result.getResponse().getContentType()).isEqualTo(MediaType.APPLICATION_JSON.toString());
         final List<TodoItem> fetchedTodoItems = todoItemJacksonTester.parseObject(result.getResponse().getContentAsString());
         assertThat(fetchedTodoItems).hasSameSizeAs(givenTodos);
-        assertThat(fetchedTodoItems)
-                .usingRecursiveFieldByFieldElementComparator()
-                .isEqualTo(givenTodos);
+        assertThat(fetchedTodoItems).usingRecursiveFieldByFieldElementComparator().isEqualTo(givenTodos);
     }
 
     @Test
@@ -71,25 +69,10 @@ class TodoListControllerTest {
         Integer givenId = todoItems.get(0).getId();
         String givenText = "update text";
         Boolean givenDone = false;
-        String givenTodoItem = String.format("{\"id\": %s, \"text\": \"%s\", \"done\": \"%s\"}",
-                givenId,
-                givenText,
-                givenDone
-        );
+        String givenTodoItem = String.format("{\"id\": %s, \"text\": \"%s\", \"done\": \"%s\"}", givenId, givenText, givenDone);
         //When
         //Then
-        client.perform(MockMvcRequestBuilders.put("/todos/" + givenId)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(givenTodoItem))
-                .andExpect(
-                        MockMvcResultMatchers.status().isOk()
-                ).andExpect(
-                        MockMvcResultMatchers.jsonPath("$.id").isNumber()
-                ).andExpect(
-                        MockMvcResultMatchers.jsonPath("$.text").value(givenText)
-                ).andExpect(
-                        MockMvcResultMatchers.jsonPath("$.done").value(givenDone)
-                );
+        client.perform(MockMvcRequestBuilders.put("/todos/" + givenId).contentType(MediaType.APPLICATION_JSON).content(givenTodoItem)).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber()).andExpect(MockMvcResultMatchers.jsonPath("$.text").value(givenText)).andExpect(MockMvcResultMatchers.jsonPath("$.done").value(givenDone));
         List<TodoItem> afterTodoItems = todoListRepository.findAll();
         AssertionsForInterfaceTypes.assertThat(afterTodoItems).hasSize(2);
         AssertionsForClassTypes.assertThat(afterTodoItems.get(0).getId()).isEqualTo(givenId);
@@ -113,21 +96,15 @@ class TodoListControllerTest {
 
     @Test
     void should_create_TodoItem_success() throws Exception {
-    //Given
+        //Given
         todoListRepository.deleteAll();
-        String givenText="add item";
-        Boolean givenDone=false;
-        String givenTodoItem=String.format("{\"text\":\"%s\",\"done\":\"%s\"}",givenText,givenDone);
+        String givenText = "add item";
+        Boolean givenDone = false;
+        String givenTodoItem = String.format("{\"text\":\"%s\",\"done\":\"%s\"}", givenText, givenDone);
 
-    //When
-    //Then
-          client.perform(MockMvcRequestBuilders.post("/todos")
-                  .contentType(MediaType.APPLICATION_JSON)
-                  .content(givenTodoItem))
-                  .andExpect(MockMvcResultMatchers.status().isCreated())
-                  .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
-                  .andExpect(MockMvcResultMatchers.jsonPath("$.text").value(givenText))
-                  .andExpect(MockMvcResultMatchers.jsonPath("$.done").value(givenDone));
+        //When
+        //Then
+        client.perform(MockMvcRequestBuilders.post("/todos").contentType(MediaType.APPLICATION_JSON).content(givenTodoItem)).andExpect(MockMvcResultMatchers.status().isCreated()).andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber()).andExpect(MockMvcResultMatchers.jsonPath("$.text").value(givenText)).andExpect(MockMvcResultMatchers.jsonPath("$.done").value(givenDone));
         List<TodoItem> todoItems = todoListRepository.findAll();
         assertThat(todoItems).hasSize(1);
         assertThat(todoItems.get(0).getId()).isEqualTo(todoItems.get(0).getId());
