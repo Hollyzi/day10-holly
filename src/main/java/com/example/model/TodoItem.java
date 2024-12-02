@@ -13,13 +13,11 @@ public class TodoItem {
     private String text;
     private Boolean done;
 
-
     public TodoItem() {
 
     }
 
-    public TodoItem(Integer id, String text, Boolean done) {
-        this.id = id;
+    public TodoItem(String text, Boolean done) {
         this.text = text;
         this.done = done;
     }

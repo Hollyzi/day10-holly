@@ -19,13 +19,18 @@ public class TodoListController {
     }
 
     @GetMapping
-    public List<TodoItem> getTodoItems(){
+    public List<TodoItem> getTodoItems() {
         return todoListService.findAll();
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping()
-    public TodoItem addTodoItem(@RequestBody TodoItem todoItem){
+    public TodoItem addTodoItem(@RequestBody TodoItem todoItem) {
         return todoListService.create(todoItem);
+    }
+
+    @PutMapping("/{id}")
+    public TodoItem updateTodoItem(@PathVariable Integer id,@RequestBody TodoItem todoItem){
+        return todoListService.update(id,todoItem);
     }
 }

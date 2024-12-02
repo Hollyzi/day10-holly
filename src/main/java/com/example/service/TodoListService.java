@@ -5,6 +5,7 @@ import com.example.repository.TodoListRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class TodoListService {
     private final TodoListRepository todoListRepository;
@@ -15,10 +16,19 @@ public class TodoListService {
 
 
     public List<TodoItem> findAll() {
-     return todoListRepository.findAll();
+        return todoListRepository.findAll();
     }
 
     public TodoItem create(TodoItem todoItem) {
-    return  todoListRepository.save(todoItem);
+        return todoListRepository.save(todoItem);
+    }
+
+    public TodoItem update(Integer id, TodoItem todoItem) {
+        TodoItem todoItemById = todoListRepository.findById(id).orElse(null);
+        Boolean doneUpdate = todoItem.getDone();
+        String textUpdate = todoItem.getText();
+        todoItemById.setDone(doneUpdate);
+        todoItemById.setText(textUpdate);
+        return todoListRepository.save(todoItemById);
     }
 }
