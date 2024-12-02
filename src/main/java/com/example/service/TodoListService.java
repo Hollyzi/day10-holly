@@ -1,10 +1,12 @@
 package com.example.service;
 
+import com.example.exception.IdNotFoundException;
 import com.example.model.TodoItem;
 import com.example.repository.TodoListRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TodoListService {
@@ -25,10 +27,12 @@ public class TodoListService {
 
     public TodoItem update(Integer id, TodoItem todoItem) {
         TodoItem todoItemById = todoListRepository.findById(id).orElse(null);
-        Boolean doneUpdate = todoItem.getDone();
-        String textUpdate = todoItem.getText();
-        todoItemById.setDone(doneUpdate);
-        todoItemById.setText(textUpdate);
+        if (todoItem.getDone() != null) {
+            todoItemById.setDone(todoItem.getDone());
+        }
+        if (todoItem.getText() != null) {
+            todoItemById.setText(todoItem.getText());
+        }
         return todoListRepository.save(todoItemById);
     }
 
@@ -37,6 +41,8 @@ public class TodoListService {
     }
 
     public TodoItem findOne(Integer id) {
-        return todoListRepository.findById(id).orElse(null);
+        Optional<TodoItem> todoItem = todoListRepository.findById(id);
+        if (todoItem == null) throw new IdNotFoundException();
+        return todoItem.get();
     }
 }
