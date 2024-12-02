@@ -2,6 +2,8 @@ package com.example.controller;
 
 import com.example.model.TodoItem;
 import com.example.repository.TodoListRepository;
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.assertj.core.api.AssertionsForInterfaceTypes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
@@ -58,6 +62,39 @@ class TodoListControllerTest {
                 .usingRecursiveFieldByFieldElementComparator()
                 .isEqualTo(givenTodos);
     }
+    
+    @Test
+    void should_update_todoItem() throws Exception {
+    //Given
+        List<TodoItem> todoItems=todoListRepository.findAll();
+        Integer givenId=todoItems.get(0).getId();
+        String givenText="update text";
+        Boolean givenDone=false;
+        String givenTodoItem=String.format("{\"id\": %s, \"text\": \"%s\", \"done\": \"%s\"}",
+                givenId,
+                givenText,
+                givenDone
+                );
+    //When
+    //Then
+        client.perform(MockMvcRequestBuilders.put("/todos/"+givenId)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(givenTodoItem))
+                .andExpect(
+                        MockMvcResultMatchers.status().isOk()
+                ).andExpect(
+                        MockMvcResultMatchers.jsonPath("$.id").isNumber()
+                ).andExpect(
+                        MockMvcResultMatchers.jsonPath("$.text").value(givenText)
+                ).andExpect(
+                        MockMvcResultMatchers.jsonPath("$.done").value(givenDone)
+                );
+        List<TodoItem> afterTodoItems=todoListRepository.findAll();
+        AssertionsForInterfaceTypes.assertThat(afterTodoItems).hasSize(2);
+        AssertionsForClassTypes.assertThat(afterTodoItems.get(0).getId()).isEqualTo(givenId);
+        AssertionsForClassTypes.assertThat(afterTodoItems.get(0).getText()).isEqualTo(givenText);
+        AssertionsForClassTypes.assertThat(afterTodoItems.get(0).getDone()).isEqualTo(givenDone);
+    }
 
     @Test
     void should_return_no_content_when_call_delete() throws Exception {
@@ -67,7 +104,10 @@ class TodoListControllerTest {
         //When
         final MvcResult result= client.perform(MockMvcRequestBuilders.delete("/todos/2")).andReturn();
         //Then
+//        final TodoItem fe = todoItemJacksonTester.parseObject(result.getResponse().getContentAsString());
+
         assertThat(result.getResponse().getStatus()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(result.getResponse()).isEqualTo(toDeleteTodoId);
         assertThat(todoListRepository.findAll()).hasSize(1);
 
     }
