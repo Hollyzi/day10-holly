@@ -33,4 +33,10 @@ public class TodoListController {
     public TodoItem updateTodoItem(@PathVariable Integer id,@RequestBody TodoItem todoItem){
         return todoListService.update(id,todoItem);
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTodoItem(@PathVariable Integer id){
+        todoListService.delete(id);
+    }
 }

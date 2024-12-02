@@ -31,4 +31,8 @@ public class TodoListService {
         todoItemById.setText(textUpdate);
         return todoListRepository.save(todoItemById);
     }
+
+    public void delete(Integer id) {
+        todoListRepository.deleteById(id);
+    }
 }
